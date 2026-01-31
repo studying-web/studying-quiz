@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>年代の表し方クイズ</title>
+
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: radial-gradient(circle, #0f2027, #203a43, #2c5364);
+  color: white;
+  padding: 30px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.2em;
+  margin-bottom: 30px;
+  text-shadow: 0 0 15px gold;
+}
+
+/* details 全体 */
+details {
+  background: rgba(0,0,0,0.5);
+  border-radius: 15px;
+  margin: 20px auto;
+  padding: 15px 20px;
+  max-width: 600px;
+  box-shadow: 0 0 15px rgba(0,255,255,0.4);
+  transition: all 0.4s ease;
+}
+
+/* hover演出 */
+details:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(0,255,255,0.8);
+}
+
+/* summary（問題文） */
+summary {
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+}
+
+summary::after {
+  content: " ▶";
+  color: gold;
+  font-size: 1.1em;
+}
+
+/* 開いたとき */
+details[open] summary::after {
+  content: " ▼";
+}
+
+/* 答え部分 */
+.answer {
+  margin-top: 15px;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #00ffcc;
+  text-shadow: 0 0 10px #00ffcc;
+  animation: pop 0.4s ease-out;
+}
+
+/* ポップ演出 */
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>✨ 年代の表し方 クイズ ✨</h1>
+
+<details>
+  <summary>問1（レベル1） 645年は何世紀ですか？</summary>
+  <div class="answer">👉 7世紀</div>
+</details>
+
+<details>
+  <summary>問2（レベル2） 1200年は何世紀ですか？</summary>
+  <div class="answer">👉 12世紀</div>
+</details>
+
+<details>
+  <summary>問3（レベル3） 1世紀は何年から何年まで？</summary>
+  <div class="answer">👉 西暦1年〜100年</div>
+</details>
+
+<details>
+  <summary>問4（レベル4） 紀元前300年は何世紀？</summary>
+  <div class="answer">👉 紀元前3世紀</div>
+</details>
+
+</body>
+</html>
