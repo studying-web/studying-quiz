@@ -2,306 +2,355 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>秘密の入口</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 
 <style>
 body {
   margin: 0;
-  font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  font-family: "Noto Sans JP", "Yu Gothic", sans-serif;
+  font-size: 1.4em;
   background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
   color: white;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
 }
 
-/* 共通ボックス */
 .container {
-  margin-top: 40px;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0,0,0,0.7);
   padding: 25px;
   border-radius: 20px;
-  width: 95%;
-  max-width: 800px;
-  box-shadow: 0 0 25px cyan;
   text-align: center;
+  box-shadow: 0 0 30px cyan;
+  max-width: 360px;
+  margin: 20px auto;
 }
 
-h1, h2 {
-  text-shadow: 0 0 10px gold;
-}
-
-/* 入力 */
 input, button {
   width: 90%;
-  font-size: 1.1em;
-  padding: 10px;
-  margin-top: 10px;
+  padding: 12px;
+  font-size: 1em;
   border-radius: 12px;
   border: none;
 }
 
 button {
-  background: linear-gradient(45deg, gold, orange);
-  cursor: pointer;
-}
-
-#error {
-  color: #ff6666;
-  display: none;
-}
-
-#count {
-  color: #ffcc66;
-}
-
-/* 🚓 警察ロック画面 */
-#lock {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle, #300000, #000);
-  z-index: 10;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.bubble {
-  background: white;
-  color: black;
-  padding: 15px 25px;
-  border-radius: 20px;
-  font-size: 1.8em;
-  margin-bottom: 20px;
-  animation: pop 0.5s ease;
-  position: relative;
-}
-
-.bubble::after {
-  content: "";
-  position: absolute;
-  bottom: -15px;
-  left: 40px;
-  border-width: 15px 15px 0;
-  border-style: solid;
-  border-color: white transparent transparent;
-}
-
-#lock img {
-  width: 200px;
-  border-radius: 15px;
-  box-shadow: 0 0 20px red;
-  animation: shake 0.4s infinite;
-}
-
-#timer {
   margin-top: 15px;
-  font-size: 1.2em;
-  color: yellow;
+  background: linear-gradient(45deg, gold, orange);
+  box-shadow: 0 0 10px gold;
 }
 
-/* 🧠 クイズ */
+#error { color:#ff6666; display:none; }
+#count { color:#ffcc66; }
+
+/* 成功画面 */
+#success {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000428;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+
+/* 警察画面 */
+#police {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#200;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+
+.speech {
+  background:white;
+  color:black;
+  padding:15px;
+  border-radius:20px;
+  margin-bottom:10px;
+}
+
+/* クイズ */
 #quiz {
-  display: none;
-}
-
-.quiz-item {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  background: rgba(255,255,255,0.08);
-  padding: 15px;
-  margin: 20px 0;
-  border-radius: 15px;
+  display:none;
+  padding:20px;
 }
 
 .question {
-  font-size: 1.3em;
-  width: 45%;
-  min-width: 260px;
+  background:#111;
+  margin-bottom:20px;
+  padding:15px;
+  border-radius:15px;
 }
 
-/* ヒント（4択） */
-.choices {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  width: 50%;
+.choices button {
+  display:block;
+  margin:5px auto;
+  background:#333;
+  color:white;
 }
 
-.choice {
-  padding: 10px 15px;
-  border-radius: 12px;
-  background: linear-gradient(45deg, #444, #222);
-  cursor: pointer;
-  user-select: none;
-  transition: 0.2s;
-}
+.correct { background:green !important; }
+.wrong { background:red !important; }
 
-.choice:hover {
-  transform: scale(1.05);
-  background: linear-gradient(45deg, gold, orange);
-  color: black;
-}
-
-.result {
-  width: 100%;
-  margin-top: 10px;
-  font-size: 1.2em;
-}
-
-.correct { color: #66ff99; }
-.wrong   { color: #ff6666; }
-
-@keyframes pop {
-  from { transform: scale(0.2); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
-}
 </style>
 </head>
 
 <body>
 
-<!-- 🔐 パスワード画面 -->
 <div class="container" id="panel">
-  <h1>🔒 立入禁止</h1>
-  <p>パスワードを入力してください</p>
-  <input type="password" id="pw">
+  <h2>🔒 パスワード入力</h2>
+  <input id="pw" type="password">
   <button onclick="check()">ENTER</button>
   <div id="error">❌ パスワードが違います</div>
-  <div id="count">残り試行回数：3</div>
+  <div id="count">残り：3</div>
 </div>
 
-<!-- 🚓 警察画面 -->
-<div id="lock">
-  <div class="bubble">確保！👮‍♂️</div>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Japanese_police_officer.jpg">
-  <div id="timer">解除まで 10 秒</div>
+<div id="success">
+  <h1>🎉 ようこそ！ 🎉</h1>
 </div>
 
-<!-- 🧠 クイズ画面 -->
-<div class="container" id="quiz">
-  <h2>📜 年号 → 世紀クイズ（4択）</h2>
-
-  <div class="quiz-item">
-    <div class="question">問1：645年は何世紀？</div>
-    <div class="choices">
-      <div class="choice" onclick="answer(this,false)">6世紀</div>
-      <div class="choice" onclick="answer(this,true)">7世紀</div>
-      <div class="choice" onclick="answer(this,false)">8世紀</div>
-      <div class="choice" onclick="answer(this,false)">9世紀</div>
-    </div>
-    <div class="result"></div>
-  </div>
-
-  <div class="quiz-item">
-    <div class="question">問2：1192年は何世紀？</div>
-    <div class="choices">
-      <div class="choice" onclick="answer(this,false)">10世紀</div>
-      <div class="choice" onclick="answer(this,false)">11世紀</div>
-      <div class="choice" onclick="answer(this,true)">12世紀</div>
-      <div class="choice" onclick="answer(this,false)">13世紀</div>
-    </div>
-    <div class="result"></div>
-  </div>
-
-  <div class="quiz-item">
-    <div class="question">問3：1600年は何世紀？</div>
-    <div class="choices">
-      <div class="choice" onclick="answer(this,true)">16世紀</div>
-      <div class="choice" onclick="answer(this,false)">15世紀</div>
-      <div class="choice" onclick="answer(this,false)">17世紀</div>
-      <div class="choice" onclick="answer(this,false)">18世紀</div>
-    </div>
-    <div class="result"></div>
-  </div>
-
+<div id="police">
+  <div class="speech">確保！👮‍♂️</div>
+  <h2 id="timer">5</h2>
 </div>
 
-<audio id="siren" loop>
-  <source src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Police_siren_ambience.wav">
-</audio>
+<div id="quiz">
+
+<h2>📜 世紀クイズ</h2>
+
+<div class="question">
+<p>① 645年は何世紀？</p>
+<div class="choices">
+<button onclick="answer(this,true)">7世紀</button>
+<button onclick="answer(this,false)">6世紀</button>
+<button onclick="answer(this,false)">8世紀</button>
+<button onclick="answer(this,false)">5世紀</button>
+</div>
+</div>
+
+<div class="question">
+<p>② 1192年は何世紀？</p>
+<div class="choices">
+<button onclick="answer(this,false)">11世紀</button>
+<button onclick="answer(this,true)">12世紀</button>
+<button onclick="answer(this,false)">13世紀</button>
+<button onclick="answer(this,false)">10世紀</button>
+</div>
+</div>
+
+<div class="question">
+<p>③ 1600年は何世紀？</p>
+<div class="choices">
+<button onclick="answer(this,true)">16世紀</button>
+<button onclick="answer(this,false)">15世紀</button>
+<button onclick="answer(this,false)">17世紀</button>
+<button onclick="answer(this,false)">14世紀</button>
+</div>
+</div>
+
+<div class="question">
+<p>④ 794年は何世紀？</p>
+<div class="choices">
+<button onclick="answer(this,true)">8世紀</button>
+<button onclick="answer(this,false)">7世紀</button>
+<button onclick="answer(this,false)">9世紀</button>
+<button onclick="answer(this,false)">6世紀</button>
+</div>
+</div>
+
+<div class="question">
+<p>⑤ 1868年は何世紀？</p>
+<div class="choices">
+<button onclick="answer(this,false)">18世紀</button>
+<button onclick="answer(this,true)">19世紀</button>
+<button onclick="answer(this,false)">20世紀</button>
+<button onclick="answer(this,false)">17世紀</button>
+</div>
+</div>
+
+<div class="question">
+<p>⑥ 2001年は何世紀？</p>
+<div class="choices">
+<button onclick="answer(this,true)">21世紀</button>
+<button onclick="answer(this,false)">20世紀</button>
+<button onclick="answer(this,false)">22世紀</button>
+<button onclick="answer(this,false)">19世紀</button>
+</div>
+</div>
+
+<h2>🧠 人類の進化</h2>
+
+<h3>🐒 猿人</h3>
+
+<div class="question">
+<p>猿人ができたことは？</p>
+<div class="choices">
+<button onclick="answer(this,true)">二足歩行</button>
+<button onclick="answer(this,false)">火の使用</button>
+<button onclick="answer(this,false)">農耕</button>
+<button onclick="answer(this,false)">文字</button>
+</div>
+</div>
+
+<div class="question">
+<p>猿人の特徴は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">脳が小さい</button>
+<button onclick="answer(this,false)">言葉を使う</button>
+<button onclick="answer(this,false)">金属器</button>
+<button onclick="answer(this,false)">家を建てる</button>
+</div>
+</div>
+
+<div class="question">
+<p>猿人の生活は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">採集中心</button>
+<button onclick="answer(this,false)">農耕</button>
+<button onclick="answer(this,false)">牧畜</button>
+<button onclick="answer(this,false)">商業</button>
+</div>
+</div>
+
+<div class="question">
+<p>猿人の代表例は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">アウストラロピテクス</button>
+<button onclick="answer(this,false)">ネアンデルタール人</button>
+<button onclick="answer(this,false)">クロマニョン人</button>
+<button onclick="answer(this,false)">北京原人</button>
+</div>
+</div>
+
+<h3>🔥 原人</h3>
+
+<div class="question">
+<p>原人が使えたものは？</p>
+<div class="choices">
+<button onclick="answer(this,true)">火</button>
+<button onclick="answer(this,false)">文字</button>
+<button onclick="answer(this,false)">農業</button>
+<button onclick="answer(this,false)">鉄</button>
+</div>
+</div>
+
+<div class="question">
+<p>原人の特徴は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">打製石器</button>
+<button onclick="answer(this,false)">磨製石器</button>
+<button onclick="answer(this,false)">青銅器</button>
+<button onclick="answer(this,false)">貨幣</button>
+</div>
+</div>
+
+<div class="question">
+<p>原人の代表は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">北京原人</button>
+<button onclick="answer(this,false)">猿人</button>
+<button onclick="answer(this,false)">新人</button>
+<button onclick="answer(this,false)">縄文人</button>
+</div>
+</div>
+
+<div class="question">
+<p>原人の生活は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">狩りと採集</button>
+<button onclick="answer(this,false)">農耕</button>
+<button onclick="answer(this,false)">商業</button>
+<button onclick="answer(this,false)">工業</button>
+</div>
+</div>
+
+<h3>🧑 新人</h3>
+
+<div class="question">
+<p>新人ができたことは？</p>
+<div class="choices">
+<button onclick="answer(this,true)">言葉</button>
+<button onclick="answer(this,false)">二足歩行</button>
+<button onclick="answer(this,false)">火の使用</button>
+<button onclick="answer(this,false)">直立歩行</button>
+</div>
+</div>
+
+<div class="question">
+<p>新人の特徴は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">脳が発達</button>
+<button onclick="answer(this,false)">脳が小さい</button>
+<button onclick="answer(this,false)">道具なし</button>
+<button onclick="answer(this,false)">単独生活</button>
+</div>
+</div>
+
+<div class="question">
+<p>新人の代表は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">クロマニョン人</button>
+<button onclick="answer(this,false)">北京原人</button>
+<button onclick="answer(this,false)">猿人</button>
+<button onclick="answer(this,false)">原人</button>
+</div>
+</div>
+
+<div class="question">
+<p>新人の生活は？</p>
+<div class="choices">
+<button onclick="answer(this,true)">協力して生活</button>
+<button onclick="answer(this,false)">単独</button>
+<button onclick="answer(this,false)">洞窟のみ</button>
+<button onclick="answer(this,false)">動物中心</button>
+</div>
+</div>
+
+</div>
 
 <script>
 let tries = 3;
-let countdown;
 
-const panel = document.getElementById("panel");
-const lockScreen = document.getElementById("lock");
-const siren = document.getElementById("siren");
-const count = document.getElementById("count");
-const error = document.getElementById("error");
-const pw = document.getElementById("pw");
-const timer = document.getElementById("timer");
-
-function check() {
-  if (pw.value === "tamanawa") {
-    panel.style.display = "none";
-    document.getElementById("quiz").style.display = "block";
-    return;
-  }
-
-  tries--;
-  error.style.display = "block";
-  count.textContent = "残り試行回数：" + tries;
-
-  if (tries <= 0) lock();
-}
-
-function lock() {
-  panel.style.display = "none";
-  lockScreen.style.display = "flex";
-
-  if (navigator.vibrate) navigator.vibrate([300,200,300]);
-
-  try { siren.play(); } catch(e) {}
-
-  let time = 10;
-  timer.textContent = "解除まで " + time + " 秒";
-
-  countdown = setInterval(() => {
-    time--;
-    timer.textContent = "解除まで " + time + " 秒";
-    if (time <= 0) unlock();
-  }, 1000);
-}
-
-function unlock() {
-  clearInterval(countdown);
-  siren.pause();
-  siren.currentTime = 0;
-
-  lockScreen.style.display = "none";
-  panel.style.display = "block";
-
-  tries = 3;
-  count.textContent = "残り試行回数：3";
-  error.style.display = "none";
-  pw.value = "";
-}
-
-function answer(el, correct) {
-  const result = el.closest(".quiz-item").querySelector(".result");
-  if (result.textContent !== "") return;
-
-  if (correct) {
-    result.textContent = "⭕ 正解！";
-    result.className = "result correct";
+function check(){
+  if(pw.value==="tamanawa"){
+    panel.style.display="none";
+    success.style.display="flex";
+    setTimeout(()=>{
+      success.style.display="none";
+      quiz.style.display="block";
+    },2000);
   } else {
-    result.textContent = "❌ 不正解";
-    result.className = "result wrong";
+    tries--;
+    error.style.display="block";
+    count.textContent="残り："+tries;
+    if(tries<=0) lock();
   }
+}
+
+function lock(){
+  panel.style.display="none";
+  police.style.display="flex";
+  let t=5;
+  const i=setInterval(()=>{
+    timer.textContent=t;
+    navigator.vibrate?.(300);
+    t--;
+    if(t<0){
+      clearInterval(i);
+      location.reload();
+    }
+  },1000);
+}
+
+function answer(btn,correct){
+  btn.classList.add(correct?"correct":"wrong");
 }
 </script>
 
