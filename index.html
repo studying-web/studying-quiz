@@ -247,7 +247,12 @@ function check() {
 function lock() {
   panel.style.display = "none";
   lockScreen.style.display = "flex";
-  siren.play();
+
+  try {
+    siren.play();
+  } catch (e) {
+    console.log("音声再生がブロックされました");
+  }
 
   setTimeout(() => {
     siren.pause();
@@ -260,7 +265,6 @@ function lock() {
     pw.value = "";
   }, 10000);
 }
-
 const panel = document.getElementById("panel");
 const success = document.getElementById("success");
 const quiz = document.getElementById("quiz");
@@ -273,3 +277,4 @@ const siren = document.getElementById("siren");
 
 </body>
 </html>
+
