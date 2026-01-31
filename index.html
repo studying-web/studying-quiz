@@ -2,11 +2,16 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>秘密の入口</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>秘密の入口</title>
 <meta name="robots" content="noindex,nofollow">
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family:
@@ -15,44 +20,52 @@ body {
     "Meiryo",
     "Noto Sans JP",
     sans-serif;
-  font-size: 1.5em;
   background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
   color: white;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
+/* 🔐 パネル */
 .container {
-  background: rgba(0,0,0,0.7);
-  padding: 40px;
-  border-radius: 20px;
+  background: rgba(0,0,0,0.75);
+  padding: 25px;
+  border-radius: 18px;
   text-align: center;
-  box-shadow: 0 0 30px cyan;
-  width: 340px;
-  transition: 0.3s;
+  box-shadow: 0 0 25px cyan;
+  width: 90%;
+  max-width: 360px;
 }
 
 h1 {
-  margin-bottom: 15px;
-  text-shadow: 0 0 15px gold;
+  font-size: 1.6em;
+  margin-bottom: 10px;
+  text-shadow: 0 0 12px gold;
 }
 
+p {
+  font-size: 1em;
+}
+
+/* 入力 */
 input {
-  width: 80%;
-  padding: 10px;
-  font-size: 1.1em;
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
   border-radius: 10px;
   border: none;
   outline: none;
   text-align: center;
 }
 
+/* ボタン */
 button {
+  width: 100%;
   margin-top: 15px;
-  padding: 10px 25px;
+  padding: 12px;
   font-size: 1.1em;
   border: none;
   border-radius: 15px;
@@ -61,13 +74,13 @@ button {
   box-shadow: 0 0 10px gold;
 }
 
-button:hover {
-  transform: scale(1.05);
+button:active {
+  transform: scale(0.97);
 }
 
 #error {
   margin-top: 10px;
-  color: #ff6666;
+  color: #ff7777;
   display: none;
 }
 
@@ -77,7 +90,7 @@ button:hover {
   color: #ffcc66;
 }
 
-/* ✅ 成功画面 */
+/* 🎉 成功 */
 #success {
   display: none;
   position: fixed;
@@ -86,17 +99,17 @@ button:hover {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  text-align: center;
   z-index: 10;
 }
 
 #success h2 {
-  font-size: 3em;
+  font-size: 2.5em;
   color: gold;
-  text-shadow: 0 0 30px gold;
-  animation: pop 0.6s ease;
+  text-shadow: 0 0 25px gold;
 }
 
-/* 🚫 ロック画面 */
+/* 🚫 ロック */
 #lock {
   display: none;
   position: fixed;
@@ -105,38 +118,51 @@ button:hover {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  text-align: center;
+  padding: 20px;
   z-index: 20;
 }
 
 #lock h2 {
-  font-size: 2.8em;
+  font-size: 2.2em;
   color: red;
-  text-shadow: 0 0 30px red;
+  text-shadow: 0 0 25px red;
   animation: shake 0.5s infinite;
 }
 
-#lock p {
-  margin-top: 10px;
-  color: #ff9999;
-}
-
 #lock img {
-  animation: shake 0.4s infinite;
+  width: 70%;
+  max-width: 220px;
+  margin-top: 15px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px red;
 }
 
-/* 🧠 クイズ画面 */
+/* 📜 クイズ */
 #quiz {
   display: none;
   position: fixed;
   inset: 0;
   background: radial-gradient(circle, #1a2a3a, #0f2027);
-  padding: 40px;
+  padding: 20px;
   overflow-y: auto;
 }
 
-@keyframes pop {
-  0% { transform: scale(0.2); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+#quiz h2 {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+}
+
+details {
+  margin-bottom: 15px;
+  font-size: 1.2em;
+}
+
+summary {
+  cursor: pointer;
+  padding: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
 }
 
 @keyframes shake {
@@ -152,10 +178,9 @@ button:hover {
 <body>
 
 <div class="container" id="panel">
-  <h1>🔒ここは通さない！👮</h1>
+  <h1>🔒 立入禁止</h1>
   <p>パスワードを入力してください</p>
   <input type="password" id="pw" placeholder="password">
-  <br>
   <button onclick="check()">ENTER</button>
   <div id="error">❌ パスワードが違います</div>
   <div id="count">残り試行回数：3</div>
@@ -167,23 +192,9 @@ button:hover {
 </div>
 
 <div id="lock">
-  <h2>🚫 ACCESS LOCKED 🚫</h2>
-
-  <img
-    src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Japanese_police_officer.jpg"
-    alt="警察官"
-    style="
-      width: 200px;
-      margin-top: 20px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px red;
-    "
-  >
-
-  <p style="font-size:1.5em; color: yellow; margin-top:15px;">
-    👮‍♂️ 確保！
-  </p>
-
+  <h2>🚨 確保！ 🚨</h2>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Japanese_police_officer.jpg">
+  <p style="font-size:1.3em;color:yellow;">👮‍♂️ 逃走不可</p>
   <p id="unlockMsg">しばらくお待ちください…</p>
 </div>
 
@@ -191,7 +202,6 @@ button:hover {
   <source src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Police_siren_ambience.wav" type="audio/wav">
 </audio>
 
-<!-- 🧠 クイズ画面 -->
 <div id="quiz">
   <h2>📜 歴史クイズ</h2>
 
@@ -218,51 +228,47 @@ function check() {
   const pw = document.getElementById("pw").value;
 
   if (pw === "tamanawa") {
-    document.getElementById("panel").style.display = "none";
-    const success = document.getElementById("success");
+    panel.style.display = "none";
     success.style.display = "flex";
 
     setTimeout(() => {
       success.style.display = "none";
-      document.getElementById("quiz").style.display = "block";
+      quiz.style.display = "block";
     }, 2500);
-
   } else {
     tries--;
-    document.getElementById("error").style.display = "block";
-    document.getElementById("count").textContent = "残り試行回数：" + tries;
+    error.style.display = "block";
+    count.textContent = "残り試行回数：" + tries;
 
-    if (tries <= 0) {
-      lock();
-    }
+    if (tries <= 0) lock();
   }
 }
 
 function lock() {
-  document.getElementById("panel").style.display = "none";
-  const lockScreen = document.getElementById("lock");
+  panel.style.display = "none";
   lockScreen.style.display = "flex";
-
-  const siren = document.getElementById("siren");
-  siren.currentTime = 0;
   siren.play();
 
   setTimeout(() => {
     siren.pause();
     siren.currentTime = 0;
-
     lockScreen.style.display = "none";
-    document.getElementById("panel").style.display = "block";
-
+    panel.style.display = "block";
     tries = 3;
-    document.getElementById("count").textContent = "残り試行回数：3";
-    document.getElementById("error").style.display = "none";
-    document.getElementById("pw").value = "";
-
-    document.getElementById("unlockMsg").textContent =
-      "🔓 ロック解除。もう一度どうぞ。";
+    count.textContent = "残り試行回数：3";
+    error.style.display = "none";
+    pw.value = "";
   }, 10000);
 }
+
+const panel = document.getElementById("panel");
+const success = document.getElementById("success");
+const quiz = document.getElementById("quiz");
+const error = document.getElementById("error");
+const count = document.getElementById("count");
+const pw = document.getElementById("pw");
+const lockScreen = document.getElementById("lock");
+const siren = document.getElementById("siren");
 </script>
 
 </body>
